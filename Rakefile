@@ -6,6 +6,7 @@ Bundler.require(:default)
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'parsers'))
 require 'fiscales'
 require 'telam'
+require 'pagina12'
 
 namespace :app do
   Dotenv.load '.env'
@@ -21,5 +22,9 @@ namespace :app do
 
   task :parse_telam do
     Parsers::Telam.new.parse
+  end
+
+  task :parse_pagina12 do
+    Parsers::Pagina12.new.parse
   end
 end
