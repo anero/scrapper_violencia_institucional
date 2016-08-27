@@ -58,9 +58,11 @@ module Parsers
       content = doc.css('.editable-content').first.content.strip
       images = doc.css('.editable-content .image img').map {|i| i.attr 'src' }
 
-      db[:articles].insert_one(source: 'telam', slug: article_slug, title: title, publish_date: publish_date, content: content, images: images)
+      db[:articles].insert_one(source: 'telam', url: uri.to_s, slug: article_slug, title: title, publish_date: publish_date, content: content, images: images)
 
       puts "******************************************************"
+      puts "URL: #{uri.to_s}"
+      puts "Slug: #{article_slug}"
       puts "Titulo: #{title}"
       puts "Fecha de publicación: #{publish_date}"
       puts "Contenido: #{content}"

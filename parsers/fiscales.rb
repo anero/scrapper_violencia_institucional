@@ -53,9 +53,11 @@ module Parsers
       content = doc.css('.nota p').inject('') {|full_content, paragraph| full_content << paragraph.content }
       images = doc.css('.foto.popup').map {|i| i.attr 'href' }
 
-      db[:articles].insert_one(source: 'fiscales', slug: article_slug, title: title, publish_date: publish_date, content: content, images: images)
+      db[:articles].insert_one(source: 'fiscales', url: uri.to_s, slug: article_slug, title: title, publish_date: publish_date, content: content, images: images)
 
       puts "******************************************************"
+      puts "URL: #{uri.to_s}"
+      puts "Slug: #{article_slug}"
       puts "Titulo: #{title}"
       puts "Fecha de publicación: #{publish_date}"
       puts "Contenido: #{content}"
