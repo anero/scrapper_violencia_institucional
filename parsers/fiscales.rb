@@ -1,9 +1,7 @@
-require 'net/http'
-require 'uri'
-require 'nokogiri'
+require 'base'
 
 module Parsers
-  class Fiscales
+  class Fiscales < Base
     def initialize
       @page_number = 1
     end
@@ -39,7 +37,7 @@ module Parsers
 
     def process_page(uri)
       article_slug = article_slug(uri)
-      existing_article = db[:articles].find(slug: article_slug).first
+      existing_article = db[:articles].find(source: 'fiscales', slug: article_slug).first
       if existing_article
         puts "Salteando artículo #{article_slug}"
         return
@@ -55,7 +53,7 @@ module Parsers
       content = doc.css('.nota p').inject('') {|full_content, paragraph| full_content << paragraph.content }
       images = doc.css('.foto.popup').map {|i| i.attr 'href' }
 
-      db[:articles].insert_one(slug: article_slug, title: title, publish_date: publish_date, content: content, images: images)
+      db[:articles].insert_one(source: 'fiscales', slug: article_slug, title: title, publish_date: publish_date, content: content, images: images)
 
       puts "******************************************************"
       puts "Titulo: #{title}"
@@ -68,10 +66,6 @@ module Parsers
     def article_slug(uri)
       match_data = uri.path.match(/violencia-institucional\/(.+)\//)
       match_data[1]
-    end
-
-    def db
-      @db ||= Mongo::Client.new([ "#{ENV['MONGODB_HOST']}:#{ENV['MONGODB_PORT']}" ], :database => ENV['MONGODB_DB'])
     end
   end
 end
